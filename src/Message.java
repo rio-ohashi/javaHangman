@@ -1,10 +1,5 @@
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class UserOutput {
+public class Message {
 
     public void Start(String currentAnswer) {
         System.out.print(String.format("Here's the question\n%s\nGuess a letter: ",

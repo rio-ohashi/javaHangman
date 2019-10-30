@@ -10,34 +10,33 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Game {
+    final String FILE_NAME_ANSWER_LIST = "/Users/rio/Documents/dev/git/ciccc/mini_project/javaHangman/javaHangman/src/static/cities.txt";
     final int LIMIT_WRONG = 10;
+
     private String answerStr = "";
 
-    Game(String fileName) {
-        ArrayList<String> answerList = getListFromFile(fileName);
-        answerStr = answerList.get(new Random().nextInt(answerList.size()));
-    }
-
     public void Hangman() {
-        UserOutput userOutput = new UserOutput();
-
         ArrayList<String> originalAnswer = new ArrayList<>();
         ArrayList<String> currentAnswer = new ArrayList<>();
         ArrayList<String> wrongInputs = new ArrayList<>();
+
+        ArrayList<String> answerList = getListFromFile(FILE_NAME_ANSWER_LIST);
+        answerStr = answerList.get(new Random().nextInt(answerList.size()));
 
         IntStream.range(0, answerStr.length()).forEach(i->{
             originalAnswer.add(String.valueOf(answerStr.charAt(i)));
             currentAnswer.add(answerStr.charAt(i) != ' ' ? "_" : " ");
         });
 
-        userOutput.Start(convertToStringByList(currentAnswer));
+        Message message = new Message();
+        message.Start(convertToStringByList(currentAnswer));
 
         while (!originalAnswer.equals(currentAnswer) &&
                 wrongInputs.size() != LIMIT_WRONG) {
 
             String in = new Scanner(System.in).nextLine();
             if (!in.matches("[a-zA-Z]")) {
-                userOutput.Valid();
+                message.Valid();
                 continue;
             }
 
@@ -49,9 +48,9 @@ public class Game {
                 }
 
                 if (originalAnswer.equals(currentAnswer)) {
-                    userOutput.EndSucceed(answerStr);
+                    message.EndSucceed(answerStr);
                 } else {
-                    userOutput.Continue(
+                    message.Continue(
                             convertToStringByList(currentAnswer),
                             wrongInputs.size(),
                             convertToStringByList(wrongInputs));
@@ -60,12 +59,12 @@ public class Game {
                 wrongInputs.add(in + " ");
 
                 if (wrongInputs.size() == LIMIT_WRONG) {
-                    userOutput.EndFailure(
+                    message.EndFailure(
                             wrongInputs.size(),
                             convertToStringByList(wrongInputs),
                             answerStr);
                 } else {
-                    userOutput.Continue(
+                    message.Continue(
                             convertToStringByList(currentAnswer),
                             wrongInputs.size(),
                             convertToStringByList(wrongInputs));
@@ -74,9 +73,9 @@ public class Game {
         }
     }
 
-    private String convertToStringByList(List<String> answer) {
+    private String convertToStringByList(List<String> strList) {
         String s = "";
-        for (String str : answer) s += str;
+        for (String str : strList) s += str;
         return s;
     }
 
